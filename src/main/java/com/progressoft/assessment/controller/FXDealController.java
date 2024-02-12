@@ -14,7 +14,7 @@ public class FXDealController {
     @PostMapping("/test")
     public ResponseEntity<?> getVirtualAccount(@Valid @RequestBody FXDealsRequest request) throws Exception {
 
-        return ResponseEntity.ok(ResponseEntity.status(200));
+        return ResponseEntity.ok().build();
     }
 
 }
