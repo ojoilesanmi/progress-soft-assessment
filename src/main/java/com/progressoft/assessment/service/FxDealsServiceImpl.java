@@ -1,6 +1,5 @@
 package com.progressoft.assessment.service;
 
-import com.progressoft.assessment.data.enums.ErrorCode;
 import com.progressoft.assessment.data.enums.Status;
 import com.progressoft.assessment.data.model.BaseResponse;
 import com.progressoft.assessment.data.model.FXDeals;
@@ -10,11 +9,13 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.LoggerFactory;
 
 import org.slf4j.Logger;
+import org.springframework.stereotype.Service;
 
 import java.util.Date;
 
 
 @RequiredArgsConstructor
+@Service
 public class FxDealsServiceImpl implements FXDealsService{
 
     private final FXDealsRepository fxDealsRepository;
@@ -30,10 +31,11 @@ public class FxDealsServiceImpl implements FXDealsService{
                         fxDeals.getOrderingCurrencyISOCode(), fxDeals.getToCurrencyISOCode(), fxDeals.getAmount(),
                         fxDeals.getTimeStamp())).responseCode("00").status(Status.CREATED).build();
             } else {
-                return new BaseResponse<>(Status.FAILED, "Duplicate deal found");
+                return new BaseResponse<>(Status.FAILED, "Duplicate deal found", "07");
             }
         }catch (Exception e){
-            return new BaseResponse<>(Status.INTERNAL_ERROR, "An error occurred while saving FX Deal");
+            return new BaseResponse<>(Status.INTERNAL_ERROR, "An error occurred while saving FX Deal",
+                    "99");
         }
 
     }

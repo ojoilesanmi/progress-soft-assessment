@@ -18,14 +18,10 @@ public class BaseResponse<T> {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private T data;
 
-    public BaseResponse(Status status , String message, T data){
+    public BaseResponse(Status status, String message, String responseCode){
         this.status = status;
         this.message = message;
-        this.data = data;
-    }
-
-    public BaseResponse(Status status){
-        this.status = status;
+        this.responseCode = responseCode;
     }
 
     public BaseResponse(Status status, String message){
