@@ -9,15 +9,16 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.ErrorResponse;
+
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @ControllerAdvice
@@ -49,5 +50,25 @@ public class ExceptionController {
         return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
     }
 
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    protected ResponseEntity<Object> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) throws JsonProcessingException {
+        if (Objects.requireNonNull(ex.getRootCause()).getMessage().contains("VALUE_NUMBER_INT is not a `String` value!")) {
+
+            ErrorResponseHandler errorResponse = new ErrorResponseHandler();
+            errorResponse.setMessage("Invalid data type");
+            errorResponse.setError(ErrorCode.INVALID_DATA_TYPE);
+
+            log.info("Invalid data type === > {}", new ObjectMapper().writeValueAsString(errorResponse));
+            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        } else {
+
+            log.error("Error occurred during JSON parsing", ex);
+            ErrorResponseHandler errorResponse = new ErrorResponseHandler();
+            errorResponse.setMessage("Failed to parse JSON request");
+            errorResponse.setError(ErrorCode.JSON_PARSING_ERROR);
+
+            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        }
+    }
 }
 

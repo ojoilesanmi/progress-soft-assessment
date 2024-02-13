@@ -17,6 +17,7 @@ public class ErrorResponseHandler {
     private String code;
     private String message;
     private ErrorCode error;
+    private String field;
 
 
 }
